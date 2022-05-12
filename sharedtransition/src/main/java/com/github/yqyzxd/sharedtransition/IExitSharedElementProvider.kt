@@ -14,10 +14,7 @@ import android.view.View
  *  <author> <time> <version> <desc>
  *
  */
-interface IReturnSharedElementProvider {
+interface IExitSharedElementProvider {
 
-    fun sharedElements(): List<androidx.core.util.Pair<View,String>>?
-    fun startPosition():Int
-    fun currentPosition():Int
-    fun ext():String?
+    fun shareElements():List<androidx.core.util.Pair<View,String>>
 }

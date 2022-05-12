@@ -21,5 +21,5 @@ interface IReenterSharedElementProvider {
      * SharedTransition.EXTRA_KEY_START_POSITION
      * SharedTransition.EXTRA_KEY_CURRENT_POSITION
      */
-    fun getSharedElement(bundle: Bundle): View?
+    fun sharedElements(bundle: Bundle): List<androidx.core.util.Pair<View,String>>?
 }
