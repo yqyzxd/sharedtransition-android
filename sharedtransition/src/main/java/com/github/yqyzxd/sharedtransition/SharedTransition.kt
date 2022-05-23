@@ -190,14 +190,14 @@ class SharedTransition {
     /**
      * calling activity call this
      */
-    fun onActivityReenter(activity: Activity,requestCode:Int,data:Intent) {
-        onActivityReenter(activity,requestCode,data,null)
+    fun onActivityReenter(activity: Activity,resultCode:Int,data:Intent) {
+        onActivityReenter(activity,resultCode,data,null)
     }
 
     /**
      * calling activity call this
      */
-    fun onActivityReenter(activity: Activity,requestCode:Int,data:Intent,handler:IRenterHandler?) {
+    fun onActivityReenter(activity: Activity,resultCode:Int,data:Intent,handler:IRenterHandler?) {
         try {
             mReenterBundle= Bundle(data.extras)
             handler?.onReenter(mReenterBundle!!)
@@ -214,7 +214,6 @@ class SharedTransition {
 
     fun postponeEnterTransition(activity: Activity){
         ActivityCompat.postponeEnterTransition(activity)
-        Log.d(TAG,"postponeEnterTransition")
         mHandler.postDelayed({
             if (activity.isFinishing.not())
                 startPostponedEnterTransition(activity)
@@ -224,7 +223,6 @@ class SharedTransition {
     @JvmOverloads
     fun startPostponedEnterTransition(activity: Activity,target:View=activity.window.decorView){
         mHandler.removeCallbacksAndMessages(null)
-        Log.d(TAG,"startPostponedEnterTransition")
         target.doOnPreDraw {
             ActivityCompat.startPostponedEnterTransition(activity)
         }

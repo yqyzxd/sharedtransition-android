@@ -2,10 +2,9 @@ package com.github.yqyzxd.sharedtransition
 
 import android.app.Activity
 import android.os.Bundle
-import android.view.ViewTreeObserver
 import androidx.core.app.ActivityCompat
 import androidx.core.view.doOnPreDraw
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 
 /**
  * Copyright (C), 2015-2022, 杭州迈优文化创意有限公司
@@ -18,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
  *  <author> <time> <version> <desc>
  *
  */
-abstract class RecyclerViewReenterHandler(private val mCalledActivity: Activity) : IRenterHandler {
+abstract class ViewPager2ReenterHandler(private val mCallingActivity: Activity) : IRenterHandler {
 
     override fun onReenter(bundle: Bundle) {
         val startingPosition: Int =
@@ -26,19 +25,21 @@ abstract class RecyclerViewReenterHandler(private val mCalledActivity: Activity)
         val currentPosition: Int =
             bundle.getInt(SharedTransition.EXTRA_KEY_CURRENT_POSITION)
 
-        val recyclerView=getRecyclerView(bundle)
+        val viewPager2=getViewPager2(bundle)
+        viewPager2?.apply {
+            if (startingPosition != currentPosition) {
+                setCurrentItem(currentPosition,false)
+            }
+            ActivityCompat.postponeEnterTransition(mCallingActivity)
+            doOnPreDraw {
+                //it is necessary to request layout here in order to get a smooth transition.
+                requestLayout()
+                ActivityCompat.startPostponedEnterTransition(mCallingActivity)
+            }
+        }
 
-        if (startingPosition != currentPosition) {
-            recyclerView.scrollToPosition(currentPosition)
-        }
-        ActivityCompat.postponeEnterTransition(mCalledActivity)
-        recyclerView.doOnPreDraw {
-            //it is necessary to request layout here in order to get a smooth transition.
-            recyclerView.requestLayout()
-            ActivityCompat.startPostponedEnterTransition(mCalledActivity)
-        }
 
     }
 
-    abstract fun getRecyclerView(bundle: Bundle):RecyclerView
+    abstract fun getViewPager2(bundle: Bundle): ViewPager2?
 }
